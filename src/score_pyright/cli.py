@@ -118,7 +118,7 @@ def main() -> int:
         # Import and run basedpyright
         try:
             # Try to import basedpyright's main module
-            from basedpyright import main as basedpyright_main
+            from basedpyright.pyright import main as basedpyright_main
             
             # Set environment variable to use our config
             original_args = sys.argv[1:]
