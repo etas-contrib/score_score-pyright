@@ -8,22 +8,12 @@ A wrapper around [basedpyright](https://github.com/DetachHead/basedpyright) with
 
 ## Installation
 
-### Using pip
+Use pip, pipx or uv:
 
 ```bash
 pip install score-pyright
-```
-
-### Using uv
-
-```bash
-uv pip install score-pyright
-```
-
-### Using pipx (for isolated execution)
-
-```bash
 pipx install score-pyright
+uv pip install score-pyright
 ```
 
 ### Using uvx (run without installation)

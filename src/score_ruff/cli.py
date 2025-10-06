@@ -1,30 +1,27 @@
-"""Command-line interface for score-pyright."""
+"""Command-line interface for score-ruff."""
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import NoReturn
 
-from basedpyright.pyright import (  # pyright: ignore[reportMissingTypeStubs]
-    main as basedpyright_main,
-)
-
-from score_pyright import __version__, config
+from score_ruff import __version__, config
 
 
-def run_basedpyright(argv: list[str]) -> NoReturn:
-    sys.argv = ["basedpyright"] + argv
-    basedpyright_main()
-    raise RuntimeError("basedpyright_main() returned unexpectedly")
+def run_ruff(argv: list[str]) -> NoReturn:
+    sys.argv = ["ruff"] + argv
+    # replace current process with ruff
+    os.execvp("ruff", sys.argv)  # type: ignore[attr-defined]
 
 
 def main():
-    """Main entry point for score-pyright."""
+    """Main entry point for score-ruff."""
     argv = sys.argv[1:]
     p = argparse.ArgumentParser(
-        description="score-pyright: A wrapper around basedpyright with score-specific defaults",
-        epilog="All other arguments are passed to basedpyright",
+        description="score-ruff: A wrapper around ruff with score-specific defaults",
+        epilog="All other arguments are passed to ruff",
         add_help=False,
     )
     _ = p.add_argument(
@@ -34,10 +31,9 @@ def main():
         "-v", "--version", action="store_true", help="Show version information and exit"
     )
     _ = p.add_argument(
-        "-p",
-        "--project",
+        "--config",
         type=str,
-        help="Path to pyrightconfig.json or pyproject.toml",
+        help="Path to pyproject.toml or ruff.toml",
     )
     _ = p.add_argument(
         "--score-config",
@@ -54,29 +50,29 @@ def main():
 
     if parsed.help:  # pyright: ignore[reportAny]
         print(p.format_help())
-        print("--- basedpyright help ---\n")
-        run_basedpyright(argv)
+        print("--- ruff help ---\n")
+        run_ruff(argv)
     
     if parsed.version:  # pyright: ignore[reportAny]
-        print(f"score-pyright version {__version__}")
-        run_basedpyright(["--version"])
+        print(f"score-ruff version {__version__}")
+        run_ruff(["--version"])
 
-    usr_cfg = Path(parsed.project) if parsed.project else None  # pyright: ignore[reportAny]
+    usr_cfg = Path(parsed.config) if parsed.config else None  # pyright: ignore[reportAny]
 
     if parsed.score_config:  # pyright: ignore[reportAny]
-        print("score-pyright default configuration:")
+        print("score-ruff default configuration:")
         cfg = config.get_default_config()
         print(json.dumps(cfg, indent=2))
         return 0
     elif parsed.print_config:  # pyright: ignore[reportAny]
-        print(f"score-pyright resolved configuration (using {usr_cfg}):")
+        print(f"score-ruff resolved configuration (using {usr_cfg}):")
         cfg = config.get_final_config(user_config_path=usr_cfg)
         print(json.dumps(cfg, indent=2))
         return 0
 
     cfg_file = config.write_config_to_tempfile(user_config=usr_cfg)
 
-    return run_basedpyright(["--project", str(cfg_file)] + rest)
+    return run_ruff(["--config", str(cfg_file)] + rest)
 
 
 if __name__ == "__main__":

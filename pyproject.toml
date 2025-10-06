@@ -1,32 +1,27 @@
-[build-system]
-requires = ["hatchling"]
-build-backend = "hatchling.build"
-
 [project]
-name = "score-pyright"
-version = "0.1.0"
-description = "A wrapper around basedpyright with score-specific defaults"
+name = "score-tooling"
+version = "0.0.0"
+description = "A collection of score specific tooling."
 readme = "README.md"
-requires-python = ">=3.9"
-license = {text = "MIT"}
+# tomllib is in the standard library since Python 3.11
+requires-python = ">=3.11"
 authors = [
-    {name = "ETAS Contributors"},
+    {name = "Alexander Lanin"},
 ]
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
-    "License :: OSI Approved :: MIT License",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.9",
-    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
     "Topic :: Software Development :: Quality Assurance",
     "Topic :: Software Development :: Testing",
 ]
 dependencies = [
-    "basedpyright>=1.0.0",
-    "tomli>=2.0.0; python_version<'3.11'",
+    "basedpyright",
+    "ruff",
 ]
 
 [project.urls]
@@ -35,6 +30,14 @@ Repository = "https://github.com/etas-contrib/score_score-pyright"
 
 [project.scripts]
 score-pyright = "score_pyright.cli:main"
+score-ruff = "score_ruff.cli:main"
 
 [tool.hatch.build.targets.wheel]
-packages = ["src/score_pyright"]
+packages = [
+    "src/score_pyright",
+    "src/score_ruff",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
